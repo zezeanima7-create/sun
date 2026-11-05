@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131b">
+  <title>Sun Studio 0.1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Sun Studio início"><span class="sun-mark">☀</span><span>Sun Studio <small>0.1</small></span></a>
+    <div class="top-actions">
+      <label class="language-label" for="language">Idioma</label>
+      <select id="language" aria-label="Interface language">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="welcome">
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">SUA PRIMEIRA LINGUAGEM</p>
+        <h1 data-i18n="heading">Programar pode ser simples.</h1>
+        <p class="subheading" data-i18n="intro">Escreva um código Sun ou monte um programa com blocos.</p>
+      </div>
+      <div class="file-pill"><span class="file-dot"></span><span id="file-name">meu-programa.sun</span></div>
+    </section>
+
+    <section class="panels">
+      <section class="panel editor-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">01</span><h2 data-i18n="code">Código</h2></div>
+          <div class="editor-actions">
+            <button class="button button-quiet" id="example-btn" data-i18n="example">Exemplo</button>
+            <button class="button button-quiet" id="download-btn" data-i18n="download">Baixar .sun</button>
+          </div>
+        </div>
+        <div class="code-wrap">
+          <div class="line-numbers" id="line-numbers">1</div>
+          <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código Sun">local nome = "Mundo"
+fale "Olá, " + nome
+local moedas = 10
+se moedas > 5 é legítimo:
+    fale "Você conseguiu!"
+senao:
+    fale "Continue tentando."</textarea>
+        </div>
+        <div class="editor-footer"><span data-i18n="extension">Arquivos Sun usam a extensão .sun</span><button id="clear-btn" class="text-button" data-i18n="clear">Limpar código</button></div>
+      </section>
+
+      <section class="panel blocks-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">02</span><h2 data-i18n="blocks">Blocos visuais</h2></div>
+          <span class="beta-tag" data-i18n="beta">INICIAL</span>
+        </div>
+        <p class="panel-description" data-i18n="blocks-help">Adicione blocos para montar um programa. Eles serão convertidos em código Sun.</p>
+        <div class="block-toolbar">
+          <button class="block-add block-say" data-block="say">＋ <span data-i18n="say">Mostrar texto</span></button>
+          <button class="block-add block-variable" data-block="variable">＋ <span data-i18n="variable">Criar variável</span></button>
+          <button class="block-add block-repeat" data-block="repeat">＋ <span data-i18n="repeat">Repetir</span></button>
+        </div>
+        <div id="visual-blocks" class="visual-blocks">
+          <div class="empty-blocks" data-i18n="empty-blocks">Seus blocos aparecerão aqui.</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="run-row">
+      <button id="run-btn" class="button button-run"><span>▶</span><span data-i18n="run">Executar programa</span></button>
+      <span class="run-hint" data-i18n="run-hint">Seu código é executado neste navegador.</span>
+    </section>
+
+    <section class="panel console-panel">
+      <div class="panel-heading console-heading">
+        <div><span class="panel-kicker">03</span><h2 data-i18n="console">Console</h2></div>
+        <button id="console-clear" class="text-button" data-i18n="clear-console">Limpar console</button>
+      </div>
+      <pre id="output" class="output" aria-live="polite"><span class="muted" data-i18n="console-ready">O resultado aparecerá aqui quando você executar o programa.</span></pre>
+    </section>
+
+    <section class="help-strip">
+      <div class="help-icon">☼</div>
+      <div><strong data-i18n="tip-title">Dica para começar</strong><p data-i18n="tip-text">Use <code>fale</code> para mostrar uma mensagem. Exemplo: <code>fale "Olá!"</code></p></div>
+    </section>
+  </main>
+
+  <footer><span>☀ SUN</span><span data-i18n="footer">Feito para aprender, criar e compartilhar.</span><a href="https://github.com/zezeanima7-create/sun">GitHub</a></footer>
+  <script src="languages.js"></script>
+  <script src="interpreter.js"></script>
+  <script src="blocks.js"></script>
+  <script src="sun.js"></script>
+</body>
+</html>
