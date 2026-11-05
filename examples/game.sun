@@ -1,0 +1,9 @@
+# Exemplo simples de jogo: pontuação
+local jogador = "Aventureiro"
+local pontos = 25
+
+fale "Bem-vindo, " + jogador
+se pontos > 20 é legítimo:
+    fale "Você passou de fase!"
+senao:
+    fale "Continue jogando."
