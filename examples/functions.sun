@@ -1,0 +1,10 @@
+# Criando e usando funções
+funcao somar(a, b):
+    retorne a + b
+
+funcao dobro(numero):
+    retorne numero * 2
+
+local resultado = somar(5, 7)
+fale resultado
+fale dobro(resultado)
