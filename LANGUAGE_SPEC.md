@@ -91,21 +91,41 @@ Uma função pode receber zero ou mais parâmetros e pode chamar outras funçõe
 
 Aliases: `function`/`funcion` e `return`/`retornar`.
 
-## 9. Fim de bloco
+## 9. Listas e coleções
+
+Crie listas usando colchetes. Os índices começam em zero.
+
+```sun
+local inventario = ["chave", "mapa"]
+fale inventario[0]
+mude inventario[1] = "espada"
+adicionar(inventario, "poção")
+fale tamanho(inventario)
+```
+
+Funções disponíveis:
+- `tamanho(lista_ou_texto)` / `length(list_or_text)`: retorna a quantidade de itens ou caracteres.
+- `adicionar(lista, valor)` / `add(list, value)`: adiciona um item ao final.
+- `remover(lista, índice)` / `remove(list, index)`: remove e devolve o item na posição indicada.
+- `contem(lista, valor)` / `contains(list, value)`: verifica se a lista contém o valor.
+- `numero(valor)` / `number(value)`: converte para número.
+- `texto(valor)` / `string(value)`: converte para texto.
+
+## 10. Fim de bloco
 
 A indentação encerra os blocos automaticamente. A palavra `fim` também pode ser usada para encerrar explicitamente um bloco.
 
-## 10. Limites de segurança do interpretador
+## 11. Limites de segurança do interpretador
 
 - No máximo 10.000 comandos executados por programa.
 - No máximo 1.000 repetições em um único comando `repita`.
 - Divisão por zero gera uma mensagem de erro.
 - Variáveis não declaradas geram uma mensagem de erro.
 
-## 11. Recursos ainda não implementados
+## 12. Recursos ainda não implementados
 
-Listas, objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e operações lógicas compostas ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
+Objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e operações lógicas compostas ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
 
-## 12. Próxima evolução
+## 13. Próxima evolução
 
-A próxima versão deverá adicionar testes automatizados, entrada do usuário e bibliotecas para jogos, mantendo compatibilidade com os programas desta especificação.
+O projeto agora inclui testes automatizados executados pelo GitHub Actions. As próximas versões devem adicionar entrada do usuário e bibliotecas para jogos, mantendo compatibilidade com esta especificação.
