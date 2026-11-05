@@ -108,7 +108,7 @@
             if(lines[i]&&lines[i].indent===indent&&lines[i].text==="fim")i++;
             continue;
           }
-          if((m=text.match(/^enquanto\s+(.+?)\\s*:\\s*$/u))){
+          if((m=text.match(/^enquanto\s+(.+?)\s*:\s*$/u))){
             const childIndent=lines[i+1]&&lines[i+1].indent>indent?lines[i+1].indent:null;
             if(childIndent===null)throw new Error("Linha "+item.line+": enquanto precisa ter um bloco indentado.");
             const child=parseBlock(i+1,childIndent);nodes.push({type:"while",condition:m[1],body:child.nodes,line:item.line});i=child.next;
