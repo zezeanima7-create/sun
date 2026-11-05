@@ -95,9 +95,8 @@
             cursor++;const bodyStart=cursor;const childIndent=(()=>{let i=bodyStart;while(i<lines.length&&(!lines[i].text||lines[i].text==="fim"))i++;return i<lines.length&&lines[i].indent>item.indent?lines[i].indent:null;})();
             if(childIndent===null)continue;
             const bodyEnd=(()=>{let i=bodyStart;while(i<lines.length){if(lines[i].text&&lines[i].indent<=item.indent)break;i++;}return i;})();
-            const body=lines.slice(bodyStart,bodyEnd).map(x=>x.raw).join("\n");
+            for(let n=0;n<count;n++){cursor=bodyStart;executeBlock(childIndent);}
             cursor=bodyEnd;if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;
-            for(let n=0;n<count;n++){const nestedInterpreter=new SunInterpreter(this.onOutput);nestedInterpreter.variables=this.variables;nestedInterpreter.run(body);this.variables=nestedInterpreter.variables;}
             continue;
           }
           throw new Error("Linha "+item.line+": não conheço o comando '"+text+"'.");
