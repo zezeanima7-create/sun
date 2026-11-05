@@ -1,0 +1,10 @@
+# Inventário simples
+local inventario = ["espada", "escudo"]
+adicionar(inventario, "poção")
+fale "Itens:"
+fale tamanho(inventario)
+fale inventario[0]
+mude inventario[1] = "armadura"
+fale contem(inventario, "poção")
+remover(inventario, 0)
+fale tamanho(inventario)
