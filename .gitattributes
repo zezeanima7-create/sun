@@ -1,0 +1,5 @@
+# Mark .sun files as source code for repository tooling.
+# GitHub's Linguist must also know the language name for repository-wide
+# language statistics and native highlighting to fully recognize it.
+*.sun linguist-language=Sun
+*.sun linguist-detectable=true
