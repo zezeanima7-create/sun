@@ -1,0 +1,8 @@
+# Funções matemáticas
+local lado = 9
+fale raiz(lado * lado)
+fale arredondar(3.6)
+fale absoluto(-12)
+fale maximo(4, 10, 7)
+fale minimo(4, 10, 7)
+fale aleatorio(1, 6)
