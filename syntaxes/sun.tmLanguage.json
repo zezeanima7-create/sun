@@ -26,6 +26,9 @@
     },
     {
       "include": "#functions"
+    },
+    {
+      "include": "#punctuation"
     }
   ],
   "repository": {
@@ -69,6 +72,10 @@
         {
           "name": "keyword.operator.word.sun",
           "match": "\\bé legítimo\\b"
+        },
+        {
+          "name": "support.function.builtin.sun",
+          "match": "\\\\b(tamanho|length|adicionar|add|remover|remove|contem|contains|numero|number|texto|string)\\\\b"
         }
       ]
     },
@@ -90,11 +97,15 @@
     },
     "operators": {
       "name": "keyword.operator.sun",
-      "match": "==|!=|>=|<=|[+*/%=<>-]"
+      "match": "==|!=|>=|<=|[+*/%=<>\\-]"
     },
     "functions": {
       "name": "entity.name.function.sun",
       "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()"
+    },
+    "punctuation": {
+      "name": "punctuation.section.sun",
+      "match": "[\\[\\](),]"
     }
   }
 }
