@@ -1,4 +1,4 @@
-# Especificação da linguagem Sun — versão 0.1
+# Especificação da linguagem Sun — versão 0.2
 
 Este documento define a sintaxe que o interpretador atual implementa. Recursos futuros não são considerados parte da linguagem até serem implementados e testados.
 
@@ -48,8 +48,9 @@ Tipos básicos atualmente suportados:
 - Textos entre aspas simples ou duplas.
 - Valores booleanos: `verdadeiro` e `falso` (também `true` e `false`).
 
-Operadores aritméticos: `+`, `-`, `*`, `/`.
+Operadores aritméticos: `+`, `-`, `*`, `/`, `%` (resto da divisão).
 Operadores de comparação: `>`, `<`, `>=`, `<=`, `==`, `!=`.
+Operadores lógicos: `e` / `and`, `ou` / `or`, `nao` / `not`. Também é possível usar `!` como negação.
 Parênteses podem agrupar expressões. O operador `+` também junta textos.
 
 ## 6. Condições
@@ -75,7 +76,20 @@ repita 3 vezes:
 
 A quantidade deve ser um número inteiro de 0 a 1000. Aliases: `repeat`/`repetir` e `times`/`veces`.
 
-## 8. Funções, parâmetros e retornos
+## 8. Repetição condicional
+
+Use `enquanto` para repetir um bloco enquanto a condição for verdadeira. A execução total continua protegida pelo limite global de comandos.
+
+```sun
+local energia = 3
+enquanto energia > 0:
+    fale energia
+    mude energia = energia - 1
+```
+
+Aliases: `while` e `mientras`.
+
+## 9. Funções, parâmetros e retornos
 
 Declare uma função com `funcao`, informe os parâmetros entre parênteses e use `retorne` para devolver um valor.
 
@@ -91,7 +105,7 @@ Uma função pode receber zero ou mais parâmetros e pode chamar outras funçõe
 
 Aliases: `function`/`funcion` e `return`/`retornar`.
 
-## 9. Listas e coleções
+## 10. Listas e coleções
 
 Crie listas usando colchetes. Os índices começam em zero.
 
@@ -111,21 +125,32 @@ Funções disponíveis:
 - `numero(valor)` / `number(value)`: converte para número.
 - `texto(valor)` / `string(value)`: converte para texto.
 
-## 10. Fim de bloco
+## 11. Funções matemáticas
+
+- `raiz(n)` / `sqrt(n)`: raiz quadrada.
+- `arredondar(n)` / `round(n)`: arredonda para o inteiro mais próximo.
+- `piso(n)` / `floor(n)`: arredonda para baixo.
+- `teto(n)` / `ceil(n)`: arredonda para cima.
+- `absoluto(n)` / `abs(n)`: valor absoluto.
+- `maximo(a, b, ...)` / `maximum(...)`: maior valor.
+- `minimo(a, b, ...)` / `minimum(...)`: menor valor.
+- `aleatorio(min, max)` / `random(min, max)`: inteiro aleatório dentro do intervalo.
+
+## 12. Fim de bloco
 
 A indentação encerra os blocos automaticamente. A palavra `fim` também pode ser usada para encerrar explicitamente um bloco.
 
-## 11. Limites de segurança do interpretador
+## 13. Limites de segurança do interpretador
 
 - No máximo 10.000 comandos executados por programa.
 - No máximo 1.000 repetições em um único comando `repita`.
 - Divisão por zero gera uma mensagem de erro.
 - Variáveis não declaradas geram uma mensagem de erro.
 
-## 12. Recursos ainda não implementados
+## 14. Recursos ainda não implementados
 
-Objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e operações lógicas compostas ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
+Objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e entrada do teclado, gráficos, áudio, eventos de jogo e objetos ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
 
-## 13. Próxima evolução
+## 15. Próxima evolução
 
 O projeto agora inclui testes automatizados executados pelo GitHub Actions. As próximas versões devem adicionar entrada do usuário e bibliotecas para jogos, mantendo compatibilidade com esta especificação.
