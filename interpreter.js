@@ -11,7 +11,7 @@
   class ExpressionParser {
     constructor(source,variables,callFunction){
       this.variables=variables;this.callFunction=callFunction;this.tokens=[];
-      const pattern=/\s*(?:(\d+(?:\.\d+)?)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|([\p{L}_][\p{L}\p{N}_]*)|(>=|<=|==|!=|[+*/(),\[\]<>-]))/uy;
+      const pattern=/\s*(?:(\d+(?:\.\d+)?)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|([\p{L}_][\p{L}\p{N}_]*)|(>=|<=|==|!=|[+*/(),\[\]<>!%-]))/uy;
       let pos=0;
       while(pos<source.length){
         pattern.lastIndex=pos;const m=pattern.exec(source);
@@ -23,7 +23,9 @@
     peek(){return this.tokens[this.pos];}
     take(v){if(this.peek()&&this.peek().value===v){this.pos++;return true;}return false;}
     parse(){const v=this.logicalOr();if(this.pos<this.tokens.length)throw new Error("Há algo sobrando na expressão.");return v;}
-    logicalOr(){let a=this.logicalAnd();while(this.peek()&&this.peek().type==="name"&&["ou","or"].includes(this.peek().value)){this.pos++;const b=this.logicalAnd();a=Boolean(a)||Boolean(b);}return a;}\n    logicalAnd(){let a=this.compare();while(this.peek()&&this.peek().type==="name"&&["e","and"].includes(this.peek().value)){this.pos++;const b=this.compare();a=Boolean(a)&&Boolean(b);}return a;}\n    compare(){let a=this.add();while(this.peek()&&[">","<",">=","<=","==","!="].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.add();a=op===">"?a>b:op==="<"?a<b:op===">="?a>=b:op==="<="?a<=b:op==="=="?a===b:a!==b;}return a;}
+    logicalOr(){let a=this.logicalAnd();while(this.peek()&&this.peek().type==="name"&&["ou","or"].includes(this.peek().value)){this.pos++;const b=this.logicalAnd();a=Boolean(a)||Boolean(b);}return a;}
+    logicalAnd(){let a=this.compare();while(this.peek()&&this.peek().type==="name"&&["e","and"].includes(this.peek().value)){this.pos++;const b=this.compare();a=Boolean(a)&&Boolean(b);}return a;}
+    compare(){let a=this.add();while(this.peek()&&[">","<",">=","<=","==","!="].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.add();a=op===">"?a>b:op==="<"?a<b:op===">="?a>=b:op==="<="?a<=b:op==="=="?a===b:a!==b;}return a;}
     add(){let a=this.multiply();while(this.peek()&&["+","-"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.multiply();a=op==="+"?(typeof a==="string"||typeof b==="string"?String(a)+String(b):Number(a)+Number(b)):Number(a)-Number(b);}return a;}
     multiply(){let a=this.atom();while(this.peek()&&["*","/"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.atom();if(op==="/"&&Number(b)===0)throw new Error("Não é possível dividir por zero.");a=op==="*"?Number(a)*Number(b):Number(a)/Number(b);}return a;}
     atom(){
@@ -105,6 +107,13 @@
             if(lines[i]&&lines[i].indent===indent&&lines[i].text==="fim")i++;
             continue;
           }
+          if((m=text.match(/^enquanto\\s+(.+?)\\s*:\\s*$/u))){
+            const childIndent=lines[i+1]&&lines[i+1].indent>indent?lines[i+1].indent:null;
+            if(childIndent===null)throw new Error("Linha "+item.line+": enquanto precisa ter um bloco indentado.");
+            const child=parseBlock(i+1,childIndent);nodes.push({type:"while",condition:m[1],body:child.nodes,line:item.line});i=child.next;
+            if(lines[i]&&lines[i].indent===indent&&lines[i].text==="fim")i++;
+            continue;
+          }
           if((m=text.match(/^local\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){nodes.push({type:"local",name:m[1],value:m[2],line:item.line});i++;continue;}
           if((m=text.match(/^mude\s+([\p{L}_][\p{L}\p{N}_]*)\s*\[\s*(.+?)\s*\]\s*=\s*(.+)$/u))){nodes.push({type:"indexSet",name:m[1],index:m[2],value:m[3],line:item.line});i++;continue;}
           if((m=text.match(/^mude\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){nodes.push({type:"set",name:m[1],value:m[2],line:item.line});i++;continue;}
@@ -168,6 +177,14 @@
         if(node.type==="if"){
           value=Boolean(this.expression(node.condition,scope));
           const result=this.execute(value?node.yes:node.no,scope,inFunction);if(result&&result.returned)return result;
+          continue;
+        }
+        if(node.type==="while"){
+          while(Boolean(this.expression(node.condition,scope))){
+            const result=this.execute(node.body,scope,inFunction);
+            if(result&&result.returned)return result;
+            if(this.steps>MAX_STEPS)throw new Error("O programa passou do limite de comandos.");
+          }
           continue;
         }
         if(node.type==="repeat"){
