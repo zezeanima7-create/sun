@@ -110,6 +110,7 @@
           if((m=text.match(/^mude\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){nodes.push({type:"set",name:m[1],value:m[2],line:item.line});i++;continue;}
           if(text.startsWith("fale ")){nodes.push({type:"print",value:text.slice(5),line:item.line});i++;continue;}
           if(text.startsWith("retorne ")){nodes.push({type:"return",value:text.slice(8),line:item.line});i++;continue;}
+          if(/^[\p{L}_][\p{L}\p{N}_]*\s*\(/u.test(text)){nodes.push({type:"expression",value:text,line:item.line});i++;continue;}
           throw new Error("Linha "+item.line+": não conheço o comando '"+text+"'.");
         }
         return {nodes,next:i,ended:false};
@@ -159,6 +160,7 @@
           list[Number(index)]=this.expression(node.value,scope);continue;
         }
         if(node.type==="print"){this.output(this.expression(node.value,scope));continue;}
+        if(node.type==="expression"){this.expression(node.value,scope);continue;}
         if(node.type==="return"){
           if(!inFunction)throw new Error("Linha "+node.line+": retorne só pode ser usado dentro de uma função.");
           return {returned:true,value:this.expression(node.value,scope)};
