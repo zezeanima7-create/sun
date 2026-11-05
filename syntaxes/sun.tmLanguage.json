@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.sun",
-          "match": "\\b(se|senao|if|else|si|sino|repita|repeat|repetir|vezes|times|veces|fim|end|fin)\\b"
+          "match": "\\b(se|senao|if|else|si|sino|repita|repeat|repetir|enquanto|while|mientras|vezes|times|veces|fim|end|fin)\\b"
         },
         {
           "name": "storage.type.sun",
@@ -67,15 +67,15 @@
         },
         {
           "name": "keyword.other.sun",
-          "match": "\\b(fale|say|decir|mude|set|cambiar)\\b"
+          "match": "\\b(fale|say|decir|mude|set|cambiar|funcao|function|funcion|retorne|return|retornar)\\b"
         },
         {
           "name": "keyword.operator.word.sun",
-          "match": "\\bé legítimo\\b"
+          "match": "\\bé legítimo\\b|\\b(e|and|ou|or|nao|not)\\b"
         },
         {
           "name": "support.function.builtin.sun",
-          "match": "\\\\b(tamanho|length|adicionar|add|remover|remove|contem|contains|numero|number|texto|string)\\\\b"
+          "match": "\\\\b(tamanho|length|adicionar|add|remover|remove|contem|contains|numero|number|texto|string|raiz|sqrt|arredondar|round|piso|floor|teto|ceil|absoluto|abs|maximo|maximum|minimo|minimum|aleatorio|random)\\\\b"
         }
       ]
     },
