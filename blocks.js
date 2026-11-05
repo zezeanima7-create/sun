@@ -46,6 +46,7 @@
       if(b.type==="say") return t("say")+" "+quote(b.a);
       if(b.type==="variable") return t("let")+" "+(b.a||"valor")+" = "+(b.b||"0");
       if(b.type==="if") return t("if")+" "+(b.a||"verdadeiro")+" "+t("true")+":\n    "+t("say")+" "+quote(b.b)+"\n"+t("else")+":\n    "+t("say")+" "+quote("Tente novamente.")+"\n"+t("end");
+      if(b.type==="while") return "enquanto "+(b.a||"falso")+":\n    "+t("say")+" "+quote("Repetindo...")+"\n"+t("end");
       return t("repeat")+" "+(Number(b.a)||1)+" "+t("times")+":\n    "+t("say")+" "+quote("Olá!")+"\n"+t("end");
     });
     if(blocks.length){code.value=lines.join("\n");code.dispatchEvent(new Event("input"));}
