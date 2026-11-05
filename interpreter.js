@@ -37,6 +37,7 @@
         if(!this.take("]")){do{value.push(this.logicalOr());}while(this.take(","));if(!this.take("]"))throw new Error("Está faltando fechar a lista.");}
       }
       else if(t.type==="number"||t.type==="string"){this.pos++;value=t.value;}
+      else if(t.type==="name"&&["nao","not"].includes(t.value)){this.pos++;value=!Boolean(this.atom());}
       else if(t.type==="name"){
         this.pos++;
         if(t.value==="verdadeiro"||t.value==="true")value=true;
