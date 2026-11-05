@@ -86,8 +86,19 @@
           if(text.startsWith("fale ")){this.output(this.expression(text.slice(5)));cursor++;continue;}
           if((match=text.match(/^se\s+(.+?)(?:\s+é legítimo|\s+is true|\s+es verdadero)?\s*:\s*$/u))){
             const condition=Boolean(this.expression(match[1]));cursor++;
-            if(condition){nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="senao:"){cursor++;nested(item.indent);if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}else if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}
-            else{nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="senao:"){cursor++;nested(item.indent);if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}else if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}
+            const bodyStart=cursor;
+            const childIndent=(()=>{let i=bodyStart;while(i<lines.length&&!lines[i].text)i++;return i<lines.length&&lines[i].indent>item.indent?lines[i].indent:null;})();
+            const bodyEnd=(()=>{let i=bodyStart;while(i<lines.length){if(lines[i].text&&lines[i].indent<=item.indent)break;i++;}return i;})();
+            if(condition&&childIndent!==null)executeBlock(childIndent);else cursor=bodyEnd;
+            skip();
+            if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="senao:"){
+              cursor++;
+              const elseStart=cursor;
+              const elseIndent=(()=>{let i=elseStart;while(i<lines.length&&!lines[i].text)i++;return i<lines.length&&lines[i].indent>item.indent?lines[i].indent:null;})();
+              const elseEnd=(()=>{let i=elseStart;while(i<lines.length){if(lines[i].text&&lines[i].indent<=item.indent)break;i++;}return i;})();
+              if(!condition&&elseIndent!==null)executeBlock(elseIndent);else cursor=elseEnd;
+            }
+            if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;
             continue;
           }
           if((match=text.match(/^repita\s+(.+?)\s+(?:vezes|times|veces)\s*:\s*$/u))){
