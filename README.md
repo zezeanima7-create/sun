@@ -47,6 +47,12 @@ Esta é uma versão inicial experimental. A sintaxe, o interpretador e os blocos
 - Criar bibliotecas para jogos e gráficos.
 - Adicionar importação de arquivos e projetos.
 
+## Suporte de editor e GitHub
+
+O repositório inclui uma gramática TextMate para realce de sintaxe Sun, configuração de linguagem e metadados de extensão compatíveis com VS Code. Esses arquivos permitem preparar o suporte em editores que carregam extensões de linguagem.
+
+**Limitação do GitHub:** o arquivo `.gitattributes` não registra sozinho uma linguagem nova no GitHub Linguist. Para o GitHub reconhecer oficialmente Sun nas estatísticas do repositório e aplicar o realce nativo, ainda é necessário propor a linguagem ao projeto [github-linguist/linguist](https://github.com/github-linguist/linguist), incluindo sua definição e amostras de código.
+
 ## Licença
 
 MIT
