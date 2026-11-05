@@ -75,21 +75,37 @@ repita 3 vezes:
 
 A quantidade deve ser um número inteiro de 0 a 1000. Aliases: `repeat`/`repetir` e `times`/`veces`.
 
-## 8. Fim de bloco
+## 8. Funções, parâmetros e retornos
+
+Declare uma função com `funcao`, informe os parâmetros entre parênteses e use `retorne` para devolver um valor.
+
+```sun
+funcao somar(a, b):
+    retorne a + b
+
+local resultado = somar(5, 7)
+fale resultado
+```
+
+Uma função pode receber zero ou mais parâmetros e pode chamar outras funções já declaradas. Os parâmetros e variáveis locais da função têm escopo próprio. Uma função sem `retorne` devolve `nulo` (valor nulo). O número de argumentos precisa corresponder ao número de parâmetros.
+
+Aliases: `function`/`funcion` e `return`/`retornar`.
+
+## 9. Fim de bloco
 
 A indentação encerra os blocos automaticamente. A palavra `fim` também pode ser usada para encerrar explicitamente um bloco.
 
-## 9. Limites de segurança do interpretador
+## 10. Limites de segurança do interpretador
 
 - No máximo 10.000 comandos executados por programa.
 - No máximo 1.000 repetições em um único comando `repita`.
 - Divisão por zero gera uma mensagem de erro.
 - Variáveis não declaradas geram uma mensagem de erro.
 
-## 10. Recursos ainda não implementados
+## 11. Recursos ainda não implementados
 
-Funções definidas pelo usuário, listas, objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e operações lógicas compostas ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
+Listas, objetos, módulos, entrada do teclado, gráficos, áudio, eventos de jogo e operações lógicas compostas ainda não fazem parte desta versão. Não use esses recursos esperando que o interpretador atual os execute.
 
-## 11. Próxima evolução
+## 12. Próxima evolução
 
-A próxima versão deverá adicionar funções e retornos, testes automatizados, entrada do usuário e bibliotecas para jogos, mantendo compatibilidade com os programas desta especificação.
+A próxima versão deverá adicionar testes automatizados, entrada do usuário e bibliotecas para jogos, mantendo compatibilidade com os programas desta especificação.
