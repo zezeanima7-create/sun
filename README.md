@@ -18,7 +18,7 @@ O primeiro protótipo funciona no navegador e inclui:
 - Testes automatizados com GitHub Actions.
 - Interface em português, inglês e espanhol.
 - Download e importação de arquivos `.sun`.
-- Especificação inicial da linguagem e exemplos separados de condições e repetição.
+- Especificação da linguagem 0.2 e exemplos de condições, repetição, lógica, listas, funções e matemática.
 - Salvamento automático local do código no navegador.
 
 ## Exemplo
@@ -36,7 +36,7 @@ senao:
 
 ## Documentação da linguagem
 
-Consulte [LANGUAGE_SPEC.md](LANGUAGE_SPEC.md) para conhecer a sintaxe implementada. Os exemplos estão na pasta [examples](examples/).
+Consulte [LANGUAGE_SPEC.md](LANGUAGE_SPEC.md) para conhecer a sintaxe implementada. Os exemplos estão na pasta [examples](examples/), incluindo [lógica e enquanto](examples/logic-while.sun) e [funções matemáticas](examples/math.sun).
 
 ## Como usar
 
