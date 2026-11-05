@@ -2,13 +2,14 @@
 
 **Sun** é uma linguagem de programação experimental criada para tornar a programação acessível a iniciantes. Seu objetivo é oferecer comandos simples, editor visual e suporte a vários idiomas.
 
-## Sun Studio 0.2
+## Sun Studio 0.3
 
 O primeiro protótipo funciona no navegador e inclui:
 - Editor de código para programas `.sun`.
 - Interpretador inicial em JavaScript.
 - Console de saída e mensagens de erro simples.
 - Blocos visuais para mostrar texto, criar variáveis, repetir e testar condições.
+- Funções com parâmetros e valores de retorno no interpretador.
 - Interface em português, inglês e espanhol.
 - Download e importação de arquivos `.sun`.
 - Especificação inicial da linguagem e exemplos separados de condições e repetição.
@@ -45,7 +46,7 @@ Esta é uma versão inicial experimental. A sintaxe, o interpretador e os blocos
 
 ## Próximas etapas
 
-- Implementar funções, parâmetros e retornos no interpretador.
+- Adicionar listas e estruturas de dados.
 - Criar testes automatizados para cada recurso da linguagem.
 - Melhorar a validação de sintaxe e as mensagens de erro.
 - Adicionar edição visual de condições, funções e eventos.
