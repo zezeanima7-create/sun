@@ -11,7 +11,7 @@
   class ExpressionParser {
     constructor(source,variables,callFunction){
       this.variables=variables;this.callFunction=callFunction;this.tokens=[];
-      const pattern=/\s*(?:(\d+(?:\.\d+)?)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|([\p{L}_][\p{L}\p{N}_]*)|(>=|<=|==|!=|[+*/(),<>-]))/uy;
+      const pattern=/\s*(?:(\d+(?:\.\d+)?)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|([\p{L}_][\p{L}\p{N}_]*)|(>=|<=|==|!=|[+*/(),\[\]<>-]))/uy;
       let pos=0;
       while(pos<source.length){
         pattern.lastIndex=pos;const m=pattern.exec(source);
@@ -28,22 +28,32 @@
     multiply(){let a=this.atom();while(this.peek()&&["*","/"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.atom();if(op==="/"&&Number(b)===0)throw new Error("Não é possível dividir por zero.");a=op==="*"?Number(a)*Number(b):Number(a)/Number(b);}return a;}
     atom(){
       const t=this.peek();if(!t)throw new Error("Faltou um valor na expressão.");
-      if(this.take("(")){const v=this.compare();if(!this.take(")"))throw new Error("Está faltando fechar um parêntese.");return v;}
-      if(t.type==="number"||t.type==="string"){this.pos++;return t.value;}
-      if(t.type==="name"){
+      let value;
+      if(this.take("(")){value=this.compare();if(!this.take(")"))throw new Error("Está faltando fechar um parêntese.");}
+      else if(this.take("[")){
+        value=[];
+        if(!this.take("]")){do{value.push(this.compare());}while(this.take(","));if(!this.take("]"))throw new Error("Está faltando fechar a lista.");}
+      }
+      else if(t.type==="number"||t.type==="string"){this.pos++;value=t.value;}
+      else if(t.type==="name"){
         this.pos++;
-        if(t.value==="verdadeiro"||t.value==="true")return true;
-        if(t.value==="falso"||t.value==="false")return false;
-        if(this.take("(")){
+        if(t.value==="verdadeiro"||t.value==="true")value=true;
+        else if(t.value==="falso"||t.value==="false")value=false;
+        else if(this.take("(")){
           const args=[];
           if(!this.take(")")){do{args.push(this.compare());}while(this.take(","));if(!this.take(")"))throw new Error("Está faltando fechar os parênteses da função.");}
-          return this.callFunction(t.value,args);
-        }
-        if(t.value in this.variables)return this.variables[t.value];
-        throw new Error("A variável '"+t.value+"' não existe.");
+          value=this.callFunction(t.value,args);
+        } else if(t.value in this.variables)value=this.variables[t.value];
+        else throw new Error("A variável '"+t.value+"' não existe.");
+      } else {this.pos++;if(t.value==="-")return -Number(this.atom());throw new Error("Valor inesperado: "+t.value);}
+      while(this.take("[")){
+        const index=this.compare();if(!this.take("]"))throw new Error("Está faltando fechar o índice.");
+        if(!Array.isArray(value)&&typeof value!=="string")throw new Error("Só é possível acessar uma posição de uma lista ou texto.");
+        if(!Number.isInteger(Number(index))||Number(index)<0)throw new Error("O índice precisa ser um inteiro não negativo.");
+        value=value[Number(index)];
+        if(value===undefined)throw new Error("Esse índice não existe.");
       }
-      this.pos++;if(t.value==="-")return -Number(this.atom());
-      throw new Error("Valor inesperado: "+t.value);
+      return value;
     }
   }
 
@@ -96,6 +106,7 @@
             continue;
           }
           if((m=text.match(/^local\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){nodes.push({type:"local",name:m[1],value:m[2],line:item.line});i++;continue;}
+          if((m=text.match(/^mude\s+([\p{L}_][\p{L}\p{N}_]*)\s*\[\s*(.+?)\s*\]\s*=\s*(.+)$/u))){nodes.push({type:"indexSet",name:m[1],index:m[2],value:m[3],line:item.line});i++;continue;}
           if((m=text.match(/^mude\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){nodes.push({type:"set",name:m[1],value:m[2],line:item.line});i++;continue;}
           if(text.startsWith("fale ")){nodes.push({type:"print",value:text.slice(5),line:item.line});i++;continue;}
           if(text.startsWith("retorne ")){nodes.push({type:"return",value:text.slice(8),line:item.line});i++;continue;}
@@ -107,6 +118,21 @@
     }
     findScope(scope,name){let current=scope;while(current){if(Object.prototype.hasOwnProperty.call(current,name))return current;current=Object.getPrototypeOf(current);}return null;}
     callFunction(name,args,parentScope){
+      const builtins={
+        tamanho:()=>{if(args.length!==1)throw new Error("tamanho recebe 1 argumento.");const v=args[0];if(Array.isArray(v)||typeof v==="string")return v.length;throw new Error("tamanho espera uma lista ou texto.");},
+        length:()=>{if(args.length!==1)throw new Error("length expects 1 argument.");const v=args[0];if(Array.isArray(v)||typeof v==="string")return v.length;throw new Error("length expects a list or text.");},
+        adicionar:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("adicionar(lista, valor) precisa de uma lista e um valor.");args[0].push(args[1]);return args[0].length;},
+        add:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("add(list, value) expects a list and a value.");args[0].push(args[1]);return args[0].length;},
+        remover:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("remover(lista, índice) precisa de uma lista e um índice.");const i=Number(args[1]);if(!Number.isInteger(i)||i<0||i>=args[0].length)throw new Error("Índice inválido para remover.");return args[0].splice(i,1)[0];},
+        remove:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("remove(list, index) expects a list and an index.");const i=Number(args[1]);if(!Number.isInteger(i)||i<0||i>=args[0].length)throw new Error("Invalid remove index.");return args[0].splice(i,1)[0];},
+        contem:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("contem(lista, valor) precisa de uma lista e um valor.");return args[0].includes(args[1]);},
+        contains:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("contains(list, value) expects a list and a value.");return args[0].includes(args[1]);},
+        numero:()=>{if(args.length!==1)throw new Error("numero recebe 1 argumento.");const n=Number(args[0]);if(Number.isNaN(n))throw new Error("Não foi possível converter para número.");return n;},
+        number:()=>{if(args.length!==1)throw new Error("number expects 1 argument.");const n=Number(args[0]);if(Number.isNaN(n))throw new Error("Could not convert to number.");return n;},
+        texto:()=>{if(args.length!==1)throw new Error("texto recebe 1 argumento.");return String(args[0]);},
+        string:()=>{if(args.length!==1)throw new Error("string expects 1 argument.");return String(args[0]);}
+      };
+      if(Object.prototype.hasOwnProperty.call(builtins,name))return builtins[name]();
       const fn=this.functions[name];if(!fn)throw new Error("A função '"+name+"' não existe.");
       if(args.length!==fn.params.length)throw new Error("A função '"+name+"' espera "+fn.params.length+" parâmetro(s), mas recebeu "+args.length+".");
       if(this.depth>=MAX_RECURSION)throw new Error("Limite de chamadas de função atingido.");
@@ -124,6 +150,13 @@
         if(node.type==="set"){
           const owner=this.findScope(scope,node.name);if(!owner)throw new Error("Linha "+node.line+": a variável '"+node.name+"' ainda não existe.");
           owner[node.name]=this.expression(node.value,scope);continue;
+        }
+        if(node.type==="indexSet"){
+          const owner=this.findScope(scope,node.name);if(!owner)throw new Error("Linha "+node.line+": a variável '"+node.name+"' ainda não existe.");
+          const list=owner[node.name],index=this.expression(node.index,scope);
+          if(!Array.isArray(list))throw new Error("Linha "+node.line+": essa variável não é uma lista.");
+          if(!Number.isInteger(Number(index))||Number(index)<0||Number(index)>=list.length)throw new Error("Linha "+node.line+": índice inválido.");
+          list[Number(index)]=this.expression(node.value,scope);continue;
         }
         if(node.type==="print"){this.output(this.expression(node.value,scope));continue;}
         if(node.type==="return"){
