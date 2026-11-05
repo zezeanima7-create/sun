@@ -27,7 +27,7 @@
     logicalAnd(){let a=this.compare();while(this.peek()&&this.peek().type==="name"&&["e","and"].includes(this.peek().value)){this.pos++;const b=this.compare();a=Boolean(a)&&Boolean(b);}return a;}
     compare(){let a=this.add();while(this.peek()&&[">","<",">=","<=","==","!="].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.add();a=op===">"?a>b:op==="<"?a<b:op===">="?a>=b:op==="<="?a<=b:op==="=="?a===b:a!==b;}return a;}
     add(){let a=this.multiply();while(this.peek()&&["+","-"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.multiply();a=op==="+"?(typeof a==="string"||typeof b==="string"?String(a)+String(b):Number(a)+Number(b)):Number(a)-Number(b);}return a;}
-    multiply(){let a=this.atom();while(this.peek()&&["*","/"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.atom();if(op==="/"&&Number(b)===0)throw new Error("Não é possível dividir por zero.");a=op==="*"?Number(a)*Number(b):Number(a)/Number(b);}return a;}
+    multiply(){let a=this.atom();while(this.peek()&&["*","/","%"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.atom();if((op==="/"||op==="%")&&Number(b)===0)throw new Error("Não é possível dividir por zero.");a=op==="*"?Number(a)*Number(b):op==="/"?Number(a)/Number(b):Number(a)%Number(b);}return a;}
     atom(){
       const t=this.peek();if(!t)throw new Error("Faltou um valor na expressão.");
       let value;
@@ -108,7 +108,7 @@
             if(lines[i]&&lines[i].indent===indent&&lines[i].text==="fim")i++;
             continue;
           }
-          if((m=text.match(/^enquanto\\s+(.+?)\\s*:\\s*$/u))){
+          if((m=text.match(/^enquanto\s+(.+?)\\s*:\\s*$/u))){
             const childIndent=lines[i+1]&&lines[i+1].indent>indent?lines[i+1].indent:null;
             if(childIndent===null)throw new Error("Linha "+item.line+": enquanto precisa ter um bloco indentado.");
             const child=parseBlock(i+1,childIndent);nodes.push({type:"while",condition:m[1],body:child.nodes,line:item.line});i=child.next;
