@@ -2,7 +2,7 @@
   const ALIASES = {
     fale:["fale","say","decir"], local:["local","let"], mude:["mude","set","cambiar"],
     se:["se","if","si"], senao:["senao","else","sino"],
-    repita:["repita","repeat","repetir"], times:["vezes","times","veces"],
+    repita:["repita","repeat","repetir"], enquanto:["enquanto","while","mientras"], times:["vezes","times","veces"],
     funcao:["funcao","function","funcion"], retorne:["retorne","return","retornar"],
     fim:["fim","end","fin"]
   };
@@ -22,17 +22,17 @@
     }
     peek(){return this.tokens[this.pos];}
     take(v){if(this.peek()&&this.peek().value===v){this.pos++;return true;}return false;}
-    parse(){const v=this.compare();if(this.pos<this.tokens.length)throw new Error("Há algo sobrando na expressão.");return v;}
-    compare(){let a=this.add();while(this.peek()&&[">","<",">=","<=","==","!="].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.add();a=op===">"?a>b:op==="<"?a<b:op===">="?a>=b:op==="<="?a<=b:op==="=="?a===b:a!==b;}return a;}
+    parse(){const v=this.logicalOr();if(this.pos<this.tokens.length)throw new Error("Há algo sobrando na expressão.");return v;}
+    logicalOr(){let a=this.logicalAnd();while(this.peek()&&this.peek().type==="name"&&["ou","or"].includes(this.peek().value)){this.pos++;const b=this.logicalAnd();a=Boolean(a)||Boolean(b);}return a;}\n    logicalAnd(){let a=this.compare();while(this.peek()&&this.peek().type==="name"&&["e","and"].includes(this.peek().value)){this.pos++;const b=this.compare();a=Boolean(a)&&Boolean(b);}return a;}\n    compare(){let a=this.add();while(this.peek()&&[">","<",">=","<=","==","!="].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.add();a=op===">"?a>b:op==="<"?a<b:op===">="?a>=b:op==="<="?a<=b:op==="=="?a===b:a!==b;}return a;}
     add(){let a=this.multiply();while(this.peek()&&["+","-"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.multiply();a=op==="+"?(typeof a==="string"||typeof b==="string"?String(a)+String(b):Number(a)+Number(b)):Number(a)-Number(b);}return a;}
     multiply(){let a=this.atom();while(this.peek()&&["*","/"].includes(this.peek().value)){const op=this.tokens[this.pos++].value,b=this.atom();if(op==="/"&&Number(b)===0)throw new Error("Não é possível dividir por zero.");a=op==="*"?Number(a)*Number(b):Number(a)/Number(b);}return a;}
     atom(){
       const t=this.peek();if(!t)throw new Error("Faltou um valor na expressão.");
       let value;
-      if(this.take("(")){value=this.compare();if(!this.take(")"))throw new Error("Está faltando fechar um parêntese.");}
+      if(this.take("(")){value=this.logicalOr();if(!this.take(")"))throw new Error("Está faltando fechar um parêntese.");}
       else if(this.take("[")){
         value=[];
-        if(!this.take("]")){do{value.push(this.compare());}while(this.take(","));if(!this.take("]"))throw new Error("Está faltando fechar a lista.");}
+        if(!this.take("]")){do{value.push(this.logicalOr());}while(this.take(","));if(!this.take("]"))throw new Error("Está faltando fechar a lista.");}
       }
       else if(t.type==="number"||t.type==="string"){this.pos++;value=t.value;}
       else if(t.type==="name"){
@@ -41,11 +41,11 @@
         else if(t.value==="falso"||t.value==="false")value=false;
         else if(this.take("(")){
           const args=[];
-          if(!this.take(")")){do{args.push(this.compare());}while(this.take(","));if(!this.take(")"))throw new Error("Está faltando fechar os parênteses da função.");}
+          if(!this.take(")")){do{args.push(this.logicalOr());}while(this.take(","));if(!this.take(")"))throw new Error("Está faltando fechar os parênteses da função.");}
           value=this.callFunction(t.value,args);
         } else if(t.value in this.variables)value=this.variables[t.value];
         else throw new Error("A variável '"+t.value+"' não existe.");
-      } else {this.pos++;if(t.value==="-")return -Number(this.atom());throw new Error("Valor inesperado: "+t.value);}
+      } else {this.pos++;if(t.value==="-")return -Number(this.atom());if(t.value==="!"||(t.type==="name"&&["nao","not"].includes(t.value)))return !Boolean(this.atom());throw new Error("Valor inesperado: "+t.value);}
       while(this.take("[")){
         const index=this.compare();if(!this.take("]"))throw new Error("Está faltando fechar o índice.");
         if(!Array.isArray(value)&&typeof value!=="string")throw new Error("Só é possível acessar uma posição de uma lista ou texto.");
@@ -121,7 +121,7 @@
     callFunction(name,args,parentScope){
       const builtins={
         tamanho:()=>{if(args.length!==1)throw new Error("tamanho recebe 1 argumento.");const v=args[0];if(Array.isArray(v)||typeof v==="string")return v.length;throw new Error("tamanho espera uma lista ou texto.");},
-        length:()=>{if(args.length!==1)throw new Error("length expects 1 argument.");const v=args[0];if(Array.isArray(v)||typeof v==="string")return v.length;throw new Error("length expects a list or text.");},
+        aleatorio:()=>{if(args.length!==2)throw new Error("aleatorio(minimo, maximo) recebe 2 argumentos.");const min=Number(args[0]),max=Number(args[1]);if(!Number.isFinite(min)||!Number.isFinite(max)||max<min)throw new Error("Intervalo inválido para aleatorio.");return Math.floor(Math.random()*(max-min+1))+min;},\n        random:()=>{if(args.length!==2)throw new Error("random(min, max) expects 2 arguments.");const min=Number(args[0]),max=Number(args[1]);if(!Number.isFinite(min)||!Number.isFinite(max)||max<min)throw new Error("Invalid random range.");return Math.floor(Math.random()*(max-min+1))+min;},\n        arredondar:()=>{if(args.length!==1)throw new Error("arredondar recebe 1 argumento.");return Math.round(Number(args[0]));},\n        round:()=>{if(args.length!==1)throw new Error("round expects 1 argument.");return Math.round(Number(args[0]));},\n        piso:()=>{if(args.length!==1)throw new Error("piso recebe 1 argumento.");return Math.floor(Number(args[0]));},\n        floor:()=>{if(args.length!==1)throw new Error("floor expects 1 argument.");return Math.floor(Number(args[0]));},\n        teto:()=>{if(args.length!==1)throw new Error("teto recebe 1 argumento.");return Math.ceil(Number(args[0]));},\n        ceil:()=>{if(args.length!==1)throw new Error("ceil expects 1 argument.");return Math.ceil(Number(args[0]));},\n        raiz:()=>{if(args.length!==1||Number(args[0])<0)throw new Error("raiz recebe um número não negativo.");return Math.sqrt(Number(args[0]));},\n        sqrt:()=>{if(args.length!==1||Number(args[0])<0)throw new Error("sqrt expects a non-negative number.");return Math.sqrt(Number(args[0]));},\n        absoluto:()=>{if(args.length!==1)throw new Error("absoluto recebe 1 argumento.");return Math.abs(Number(args[0]));},\n        abs:()=>{if(args.length!==1)throw new Error("abs expects 1 argument.");return Math.abs(Number(args[0]));},\n        maximo:()=>{if(!args.length)throw new Error("maximo precisa de argumentos.");return Math.max(...args.map(Number));},\n        maximum:()=>{if(!args.length)throw new Error("maximum expects arguments.");return Math.max(...args.map(Number));},\n        minimo:()=>{if(!args.length)throw new Error("minimo precisa de argumentos.");return Math.min(...args.map(Number));},\n        minimum:()=>{if(!args.length)throw new Error("minimum expects arguments.");return Math.min(...args.map(Number));},\n        length:()=>{if(args.length!==1)throw new Error("length expects 1 argument.");const v=args[0];if(Array.isArray(v)||typeof v==="string")return v.length;throw new Error("length expects a list or text.");},
         adicionar:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("adicionar(lista, valor) precisa de uma lista e um valor.");args[0].push(args[1]);return args[0].length;},
         add:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("add(list, value) expects a list and a value.");args[0].push(args[1]);return args[0].length;},
         remover:()=>{if(args.length!==2||!Array.isArray(args[0]))throw new Error("remover(lista, índice) precisa de uma lista e um índice.");const i=Number(args[1]);if(!Number.isInteger(i)||i<0||i>=args[0].length)throw new Error("Índice inválido para remover.");return args[0].splice(i,1)[0];},
