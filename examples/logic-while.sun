@@ -1,0 +1,8 @@
+# Condições lógicas e repetição enquanto
+local energia = 3
+se energia > 0 e nao falso:
+    fale "Começando..."
+enquanto energia > 0:
+    fale "Energia: " + texto(energia)
+    mude energia = energia - 1
+fale "Fim!"
