@@ -30,6 +30,9 @@
   });
   document.getElementById("run-btn").addEventListener("click",run);
   document.getElementById("download-btn").addEventListener("click",download);
+  const fileInput=document.getElementById("file-input");
+  document.getElementById("open-btn").addEventListener("click",()=>fileInput.click());
+  fileInput.addEventListener("change",async()=>{const file=fileInput.files&&fileInput.files[0];if(!file)return;if(!file.name.toLowerCase().endsWith(".sun")){showOutput(["Erro Sun: escolha um arquivo com extensão .sun."],true);return;}code.value=await file.text();document.getElementById("file-name").textContent=file.name;code.dispatchEvent(new Event("input"));fileInput.value="";});
   document.getElementById("example-btn").addEventListener("click",()=>{code.value=sample;code.dispatchEvent(new Event("input"));});
   document.getElementById("clear-btn").addEventListener("click",()=>{code.value="";code.dispatchEvent(new Event("input"));window.SunBlocks.clear();});
   document.getElementById("console-clear").addEventListener("click",()=>showOutput([]));
