@@ -1,0 +1,9 @@
+# Função com decisão
+funcao avaliar_pontos(pontos):
+    se pontos >= 100 é legítimo:
+        retorne "Você venceu!"
+    senao:
+        retorne "Continue tentando."
+
+local mensagem = avaliar_pontos(120)
+fale mensagem
