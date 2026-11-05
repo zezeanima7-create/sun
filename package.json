@@ -1,0 +1,35 @@
+{
+  "name": "sun-language-support",
+  "displayName": "Sun Language Support",
+  "description": "Syntax highlighting and editor support for the Sun programming language.",
+  "version": "0.1.0",
+  "publisher": "sun-language-community",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "sun",
+        "aliases": [
+          "Sun",
+          "sun"
+        ],
+        "extensions": [
+          ".sun"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sun",
+        "scopeName": "source.sun",
+        "path": "./syntaxes/sun.tmLanguage.json"
+      }
+    ]
+  }
+}
