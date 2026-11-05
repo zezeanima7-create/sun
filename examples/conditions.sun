@@ -1,0 +1,6 @@
+# Condições e decisões
+local energia = 8
+se energia >= 5 é legítimo:
+    fale "Energia suficiente!"
+senao:
+    fale "Precisa recarregar."
