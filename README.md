@@ -10,7 +10,8 @@ O primeiro protótipo funciona no navegador e inclui:
 - Console de saída e mensagens de erro simples.
 - Blocos visuais para mostrar texto, criar variáveis, repetir e testar condições.
 - Interface em português, inglês e espanhol.
-- Download de arquivos `.sun`.
+- Download e importação de arquivos `.sun`.
+- Especificação inicial da linguagem e exemplos separados de condições e repetição.
 - Salvamento automático local do código no navegador.
 
 ## Exemplo
@@ -26,6 +27,10 @@ senao:
     fale "Continue tentando."
 ```
 
+## Documentação da linguagem
+
+Consulte [LANGUAGE_SPEC.md](LANGUAGE_SPEC.md) para conhecer a sintaxe implementada. Os exemplos estão na pasta [examples](examples/).
+
 ## Como usar
 
 1. Abra o [Sun Studio](https://zezeanima7-create.github.io/sun/).
@@ -40,7 +45,8 @@ Esta é uma versão inicial experimental. A sintaxe, o interpretador e os blocos
 
 ## Próximas etapas
 
-- Adicionar funções, parâmetros e retornos ao interpretador.
+- Implementar funções, parâmetros e retornos no interpretador.
+- Criar testes automatizados para cada recurso da linguagem.
 - Melhorar a validação de sintaxe e as mensagens de erro.
 - Adicionar edição visual de condições, funções e eventos.
 - Ampliar os idiomas e permitir escolher os comandos independentemente do idioma da interface.
