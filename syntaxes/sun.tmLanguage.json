@@ -1,0 +1,100 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Sun",
+  "scopeName": "source.sun",
+  "fileTypes": [
+    "sun"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.sun",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-dash.sun",
+          "match": "--.*$"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.sun",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.sun",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.sun",
+          "match": "\\b(se|senao|if|else|si|sino|repita|repeat|repetir|vezes|times|veces|fim|end|fin)\\b"
+        },
+        {
+          "name": "storage.type.sun",
+          "match": "\\b(local|let)\\b"
+        },
+        {
+          "name": "keyword.other.sun",
+          "match": "\\b(fale|say|decir|mude|set|cambiar)\\b"
+        },
+        {
+          "name": "keyword.operator.word.sun",
+          "match": "\\bé legítimo\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.sun",
+          "match": "\\b(verdadeiro|falso|true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.sun",
+          "match": "\\b(nulo|null)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.sun",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "operators": {
+      "name": "keyword.operator.sun",
+      "match": "==|!=|>=|<=|[+*/%=<>-]"
+    },
+    "functions": {
+      "name": "entity.name.function.sun",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()"
+    }
+  }
+}
