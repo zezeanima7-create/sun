@@ -1,6 +1,6 @@
 (() => {
   const ALIASES = {
-    say:["fale","say","decir"], let:["local","let"], set:["mude","set","cambiar"],
+    fale:["fale","say","decir"], local:["local","let"], mude:["mude","set","cambiar"],
     se:["se","if","si"], senao:["senao","else","sino"],
     repita:["repita","repeat","repetir"], times:["vezes","times","veces"], fim:["fim","end","fin"]
   };
