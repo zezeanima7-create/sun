@@ -1,8 +1,8 @@
 (() => {
   const ALIASES = {
     say:["fale","say","decir"], let:["local","let"], set:["mude","set","cambiar"],
-    if:["se","if","si"], otherwise:["senao","else","sino"],
-    repeat:["repita","repeat","repetir"], times:["vezes","times","veces"]
+    se:["se","if","si"], senao:["senao","else","sino"],
+    repita:["repita","repeat","repetir"], times:["vezes","times","veces"]
   };
   const MAX_STEPS = 10000;
 
@@ -73,7 +73,7 @@
           if(item.indent>indent)throw new Error("Linha "+item.line+": ajuste os espaços antes do comando.");
           const text=item.text;
           if(text==="fim"){cursor++;break;}
-          if(text==="senao:"||text==="else:"||text==="sino:")break;
+          if(text==="senao:")break;
           this.steps++;if(this.steps>MAX_STEPS)throw new Error("O programa passou do limite de comandos.");
           let match;
           if((match=text.match(/^local\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*(.+)$/u))){
@@ -86,8 +86,8 @@
           if(text.startsWith("fale ")){this.output(this.expression(text.slice(5)));cursor++;continue;}
           if((match=text.match(/^se\s+(.+?)(?:\s+é legítimo|\s+is true|\s+es verdadero)?\s*:\s*$/u))){
             const condition=Boolean(this.expression(match[1]));cursor++;
-            if(condition){nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&/^(senao|else|sino):$/.test(lines[cursor].text)){cursor++;nested(item.indent);}}
-            else{nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&/^(senao|else|sino):$/.test(lines[cursor].text)){cursor++;nested(item.indent);}}
+            if(condition){nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="senao:"){cursor++;nested(item.indent);if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}else if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}
+            else{nested(item.indent);skip();if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="senao:"){cursor++;nested(item.indent);if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}else if(cursor<lines.length&&lines[cursor].indent===item.indent&&lines[cursor].text==="fim")cursor++;}
             continue;
           }
           if((match=text.match(/^repita\s+(.+?)\s+(?:vezes|times|veces)\s*:\s*$/u))){
