@@ -1,0 +1,6 @@
+# Repetindo um comando
+local pontos = 0
+repita 5 vezes:
+    mude pontos = pontos + 2
+    fale pontos
+fale "Fim da contagem!"
