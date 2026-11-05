@@ -69,3 +69,9 @@ test("supports English while and logical aliases", () => {
   assert.equal(result.success, true);
   assert.deepEqual(output, ["done"]);
 });
+
+test("supports modulo arithmetic", () => {
+  const { result, output } = run('fale 10 % 3');
+  assert.equal(result.success, true);
+  assert.deepEqual(output, ["1"]);
+});
