@@ -45,3 +45,27 @@ test("reports division by zero", () => {
   assert.equal(result.success, false);
   assert.match(output[0], /dividir por zero/);
 });
+
+test("supports logical operators and negation", () => {
+  const { result, output } = run('local ativo = verdadeiro\nse ativo e nao falso ou falso:\n    fale "ok"');
+  assert.equal(result.success, true);
+  assert.deepEqual(output, ["ok"]);
+});
+
+test("supports while loops", () => {
+  const { result, output } = run('local n = 0\nenquanto n < 4:\n    mude n = n + 1\nfale n');
+  assert.equal(result.success, true);
+  assert.deepEqual(output, ["4"]);
+});
+
+test("supports math helper functions", () => {
+  const { result, output } = run('fale raiz(81)\nfale arredondar(3.6)\nfale maximo(2, 9, 4)\nfale absoluto(-7)');
+  assert.equal(result.success, true);
+  assert.deepEqual(output, ["9", "4", "9", "7"]);
+});
+
+test("supports English while and logical aliases", () => {
+  const { result, output } = run('let n = 0\nwhile n < 2:\n    set n = n + 1\nif n == 2 and not false:\n    say "done"');
+  assert.equal(result.success, true);
+  assert.deepEqual(output, ["done"]);
+});
