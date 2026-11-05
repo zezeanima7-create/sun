@@ -22,7 +22,7 @@
       const row = document.createElement("div");
       row.className = "visual-block " + block.type;
       const label = document.createElement("strong");
-      label.textContent = block.type === "say" ? ui("say") : block.type === "variable" ? ui("variable") : block.type === "if" ? ui("if-block") : ui("repeat");
+      label.textContent = block.type === "say" ? ui("say") : block.type === "variable" ? ui("variable") : block.type === "if" ? ui("if-block") : block.type === "while" ? ui("while") : ui("repeat");
       row.append(label);
       if(block.type==="say") row.append(field(block.a,"Olá!","Texto a mostrar",v=>{block.a=v;sync();}));
       if(block.type==="variable") {
@@ -30,6 +30,7 @@
         row.append(field(block.b,"10","Valor da variável",v=>{block.b=v;sync();}));
       }
       if(block.type==="repeat") row.append(field(block.a,"3","Número de repetições",v=>{block.a=v;sync();}));
+      if(block.type==="while") row.append(field(block.a,"energia > 0","Condição para continuar",v=>{block.a=v;sync();}));
       if(block.type==="if") {
         row.append(field(block.a,"pontos > 5","Condição",v=>{block.a=v;sync();}));
         row.append(field(block.b,"Você conseguiu!","Texto se verdadeiro",v=>{block.b=v;sync();}));
@@ -51,7 +52,7 @@
   }
   document.querySelectorAll("[data-block]").forEach(button=>button.addEventListener("click",()=>{
     const type=button.dataset.block;
-    blocks.push(type==="say"?{type,a:"Olá!"}:type==="variable"?{type,a:"pontos",b:"10"}:type==="if"?{type,a:"pontos > 5",b:"Você conseguiu!"}:{type,a:"3"});
+    blocks.push(type==="say"?{type,a:"Olá!"}:type==="variable"?{type,a:"pontos",b:"10"}:type==="if"?{type,a:"pontos > 5",b:"Você conseguiu!"}:type==="while"?{type,a:"energia > 0"}:{type,a:"3"});
     render();sync();
   }));
   document.getElementById("language").addEventListener("change",()=>{if(blocks.length){render();sync();}});
