@@ -31,5 +31,9 @@
         "path": "./syntaxes/sun.tmLanguage.json"
       }
     ]
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check interpreter.js"
   }
 }
